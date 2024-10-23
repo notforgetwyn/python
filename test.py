@@ -1,8 +1,11 @@
 import re
 import os
 
+flag = True
+sign = True
 i_month_table = [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 str_week_table = ["星期五", "星期六", "星期天", "星期一", "星期二", "星期三", "星期四"]
+BASEDATE = "15821015"
 BASEYEAR = 1582
 BASEMONTH = 10
 BASEDAY = 15
@@ -108,7 +111,6 @@ def computeDate(str_date):
             i_result += i_Dvalue * YEAR + countLeap(BASEYEAR, i_year)
         return i_result
 
-
 def grafhUserInterface():
     print("********日期查找******** ")
     print("----------------------------------")
@@ -117,12 +119,48 @@ def grafhUserInterface():
     print("--输入2进入星期数判断--")
     print("--输入3进入两个日期数差计算--")
     print("--输入0结束程序------------")
-    print("---------请输入数字----------")
 
+def right():
+    while (1):
+        print("输入1表示重新输入")
+        print("输入2表示返回主菜单")
+        print("输入0结束程序")
+        temp = input()
+        if (re.match("[0-3]",  temp) and len( temp) == 1):
+            if (temp == "1"):
+                return
+            elif (temp == "2"):
+                global flag
+                flag = True
+                return
+            else:
+                exit()
+        else:
+            print("错误,请输入正确的格式")
+            continue
 
 while (1):
-    grafhUserInterface()
-    num = input()
+    if (flag):
+        if (sign):
+            grafhUserInterface()
+            sign = True
+        print("---------请输入数字----------")
+        num = input()
+        sign = True
+        if (re.match("[0-3]", num) and len(num) == 1):
+            flag = False
+        else:
+            print("错误,请输入正确的格式")
+            print("输入1表示重新输入")
+            print("输入2表示返回主菜单")
+            print("输入0结束程序")
+            temp = input()
+            if (temp == "1"):
+                sign = False
+            elif (temp == "2"):
+                pass
+            else:
+                exit()
     if (num == "0"):
         exit()
     elif (num == "1"):
@@ -134,12 +172,35 @@ while (1):
                 print(yymmdd_date + "是闰年")
             else:
                 print(yymmdd_date + "不是闰年")
+            right()
         else:
-            print("请输入正确的格式")
-            print("输入1表示重新输入")
-            print("输入2表示返回主菜单")
-            print()
+            print("错误,请输入正确的格式")
+            right()
     elif (num == "2"):
-        pass
+        print("-------------输入要判断的年份格式为yyyymmdd---------------------")
+        print("-------------例如20181010代表2018年10月10日---------------------")
+        yymmdd_date = input()
+        if (isdate(yymmdd_date)):
+            print(yymmdd_date + "是")
+            print(str_week_table[computeDate(yymmdd_date) % 7])
+            right()
+        else:
+            print("错误,请输入正确的格式")
+            right()
     elif (num == "3"):
-        pass
+        print("-------------输入要2个对应的年份格式为yyyymmdd---------------------")
+        print("-------------例如20181010代表2018年10月10日---------------------")
+        yymmdd_date1 = input()
+        yymmdd_date2 = input()
+        if (isdate(yymmdd_date1) and isdate(yymmdd_date2)):
+            if ((yymmdd_date1 > BASEDATE and yymmdd_date2 > BASEDATE) or (
+                    yymmdd_date1 < BASEDATE and yymmdd_date2 < BASEDATE)):
+                print("{}和{}之间相差{}".format(yymmdd_date1, yymmdd_date2,
+                                                abs(computeDate(yymmdd_date1) - computeDate(yymmdd_date2))))
+            else:
+                print("{}和{}之间相差{}".format(yymmdd_date1, yymmdd_date2,
+                                                abs(computeDate(yymmdd_date1) + computeDate(yymmdd_date2))))
+            right()
+        else:
+            print("错误,请输入正确的格式")
+            right()
